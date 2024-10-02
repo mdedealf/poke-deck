@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Navigation from "../../components/Navigation";
@@ -7,31 +7,9 @@ import usePokemonList from "../../hooks/usePokemonList";
 import Loading from "../../components/Loading";
 import Error from "../../components/Error";
 
-// interface PokemonList {
-//   name: string;
-//   url: string;
-// }
-
 const Index: FC = () => {
   const [isSingleGrid, setIsSingleGrid] = useState(true);
   const { pokemonList, loading, error } = usePokemonList();
-  // const [storePokemonList, setStorePokemonList] = useState<
-  //   PokemonList[] | null
-  // >(null);
-
-  // useEffect(() => {
-  //   const storedPokemonList = window.localStorage.getItem("POKEMON_LISTS");
-
-  //   if (storedPokemonList) setStorePokemonList(JSON.parse(storedPokemonList));
-  //   else {
-  //     setStorePokemonList(pokemonList);
-  //   }
-  //   console.log(JSON.stringify(storePokemonList));
-  // }, []);
-
-  // useEffect(() => {
-  //   window.localStorage.setItem("POKEMON_LISTS", JSON.stringify(pokemonList));
-  // }, [pokemonList]);
 
   const singleGridStyle =
     "flex flex-col h-full gap-[16px] mt-[16px] overflow-hidden mx-[20px] mb-[20px] transition-all";

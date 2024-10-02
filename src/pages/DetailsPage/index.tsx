@@ -8,7 +8,7 @@ import Error from "../../components/Error";
 
 const Index: FC = () => {
   const { name } = useParams<{ name: string }>();
-  const { pokemonDetails, loading, error } = usePokemonDetails(name);
+  const { pokemonDetails, loading, error } = usePokemonDetails(name || "");
   console.log(pokemonDetails);
 
   if (loading) return <Loading />;
