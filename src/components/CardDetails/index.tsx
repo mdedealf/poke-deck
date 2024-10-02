@@ -35,7 +35,7 @@ const CardDetails: FC<PokemonDetailsProps> = ({ details }) => {
           alt="Pokemon small image"
         />
       </div>
-      <div className="flex flex-col items-start justify-center bg-black p-[16px] radius-[8px]">
+      <div className="flex flex-col items-start justify-center bg-black p-[16px] rounded-[8px]">
         <div className="flex flex-col items-start justify-center gap-[8px] w-full">
           <span className="text-[16px] font-[400px] text-[#97A0CC]">
             Health
