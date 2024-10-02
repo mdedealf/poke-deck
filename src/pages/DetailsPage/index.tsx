@@ -11,14 +11,17 @@ const Index: FC = () => {
   const { pokemonDetails, loading, error } = usePokemonDetails(name || "");
 
   if (loading) return <Loading />;
-  if (error || !pokemonDetails) return <Error />;
-  console.log(pokemonDetails);
+  // if (error || !pokemonDetails) return <Error />;
 
   return (
     <>
       <Header />
       <section>
-        <CardDetails details={pokemonDetails} />
+        {error || !pokemonDetails ? (
+          <Error />
+        ) : (
+          <CardDetails details={pokemonDetails} />
+        )}
       </section>
     </>
   );

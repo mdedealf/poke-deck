@@ -6,6 +6,10 @@ import Card from "../../components/Card";
 import usePokemonList from "../../hooks/usePokemonList";
 import Loading from "../../components/Loading";
 import Error from "../../components/Error";
+import {
+  multiGridStyle,
+  singleGridStyle,
+} from "../../components/utils/layoutStyle";
 
 interface Pokemon {
   name: string;
@@ -16,22 +20,14 @@ const Index: FC = () => {
   const [isSingleGrid, setIsSingleGrid] = useState(true);
   const { loading, error } = usePokemonList();
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
-  const [searchPokemon, setSearchPokemon] = useState("");
 
   useEffect(() => {
     // get pokemon data from local storage
     const storedPokemonList = localStorage.getItem("POKEMON_LIST");
 
     if (storedPokemonList) setPokemonList(JSON.parse(storedPokemonList));
-
     console.log("calling local storage data");
   }, []);
-  console.log(pokemonList);
-
-  const singleGridStyle =
-    "flex flex-col h-full gap-[16px] mt-[16px] overflow-hidden mx-[20px] mb-[20px] transition-all";
-  const multiGridStyle =
-    "grid grid-cols-2 h-full mt-[16px] gap-[16px] mx-[20px] overflow-hidden mb-[20px] transition-all";
 
   if (loading) return <Loading />;
   if (error) return <Error />;
