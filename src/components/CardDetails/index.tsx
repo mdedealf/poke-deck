@@ -14,7 +14,7 @@ interface PokemonDetailsProps {
 
 const CardDetails: FC<PokemonDetailsProps> = ({ details }) => {
   return (
-    <div className="flex flex-col justify-center text-white m-[24px] gap-[20px] mt-[68px]">
+    <div className="flex flex-col justify-center text-white m-[24px] gap-[20px] mt-[20px]">
       <span className="text-[18px] font-[400px] leading-[24px] text-[#97A0CC]">
         #{details.id}
       </span>

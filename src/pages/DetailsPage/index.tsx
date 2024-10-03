@@ -17,7 +17,7 @@ const Index: FC = () => {
   }, [name, fetchPokemonDetails]);
 
   if (loading) return <Loading />;
-  if (error || !pokemonDetails) return <Error />;
+  if (error || !pokemonDetails) return <Error message={"Pokemon not found"} />;
 
   return (
     <>
