@@ -18,6 +18,7 @@ export const fetchPokemonLists = createAsyncThunk(
 
     // check if there are any data in local storage then use it
     if (localStoredPokemon) {
+      // console.log for debugging only "will delete later"
       console.log("using data from localStorage");
       return JSON.parse(localStoredPokemon) as Pokemon[];
     }
@@ -30,6 +31,7 @@ export const fetchPokemonLists = createAsyncThunk(
 
     const pokemonList = data.results as Pokemon[];
     localStorage.setItem(POKEMON_LIST, JSON.stringify(pokemonList));
+    // console.log for debugging only "will delete later"
     console.log("data fetched from API and stored to localStorage");
 
     return pokemonList;
