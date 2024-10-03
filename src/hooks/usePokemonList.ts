@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { POKEMON_LIST } from "../constant/localStoragePokemon";
 
 interface Pokemon {
   name: string;
@@ -13,7 +14,8 @@ const usePokemonList = () => {
   useEffect(() => {
     const fetchPokemonList = async () => {
       // Check if pokemon data already exists in localStorage
-      const storedPokemonList = localStorage.getItem("pokemonList");
+      const storedPokemonList = localStorage.getItem(POKEMON_LIST);
+      console.log(storedPokemonList);
 
       if (storedPokemonList) {
         // Use stored data from localStorage
@@ -23,7 +25,7 @@ const usePokemonList = () => {
         // If no data in localStorage, fetch from API
         try {
           const response = await fetch(
-            "https://pokeapi.co/api/v2/pokemon?limit=20"
+            "https://pokeapi.co/api/v2/pokemon?limit=50"
           );
           if (!response.ok) {
             throw new Error("Failed to fetch Pokémon.");
@@ -31,7 +33,7 @@ const usePokemonList = () => {
           const data = await response.json();
 
           // Save the fetched data to localStorage
-          localStorage.setItem("pokemonList", JSON.stringify(data.results));
+          localStorage.setItem(POKEMON_LIST, JSON.stringify(data.results));
 
           // Update state with fetched data
           setPokemonList(data.results);

@@ -20,7 +20,7 @@ const Navigation: FC<Navigation> = ({ onClick }) => {
   };
 
   return (
-    <div className="flex mx-[20px] justify-between items-center gap-[23px] mt-[64px]">
+    <div className="flex mx-[20px] justify-between items-center gap-[23px] mt-[20px]">
       <div className="basis-[75%]">
         <select
           className="font-[16px] p-[6px] w-full rounded-[8px]"

@@ -10,6 +10,7 @@ import {
   multiGridStyle,
   singleGridStyle,
 } from "../../components/utils/layoutStyle";
+import { POKEMON_LIST } from "../../constant/localStoragePokemon";
 
 interface Pokemon {
   name: string;
@@ -23,10 +24,11 @@ const Index: FC = () => {
 
   useEffect(() => {
     // get pokemon data from local storage
-    const storedPokemonList = localStorage.getItem("POKEMON_LIST");
+    const storedPokemonList = localStorage.getItem(POKEMON_LIST);
 
     if (storedPokemonList) setPokemonList(JSON.parse(storedPokemonList));
     console.log("calling local storage data");
+    console.log(storedPokemonList);
   }, []);
 
   if (loading) return <Loading />;
@@ -37,17 +39,19 @@ const Index: FC = () => {
       <Header />
       <Navigation onClick={setIsSingleGrid} />
       <section className={`${isSingleGrid ? singleGridStyle : multiGridStyle}`}>
-        {pokemonList.map((pokemon, index) => (
-          <Link key={pokemon.name} to={`/details/${pokemon.name}`}>
-            <Card
-              name={pokemon.name}
-              index={index}
-              key={index}
-              idNumber={index + 1}
-              isSingleGrid={isSingleGrid}
-            />
-          </Link>
-        ))}
+        <>
+          {pokemonList.map((pokemon, index) => (
+            <Link key={pokemon.name} to={`/details/${pokemon.name}`}>
+              <Card
+                name={pokemon.name}
+                index={index}
+                key={index}
+                idNumber={index + 1}
+                isSingleGrid={isSingleGrid}
+              />
+            </Link>
+          ))}
+        </>
       </section>
     </>
   );
