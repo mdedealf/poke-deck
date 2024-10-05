@@ -12,7 +12,7 @@ interface Pokemon {
 }
 
 export const fetchPokemonLists = createAsyncThunk(
-  "pokemon/fetchPokemonLists",
+  "pokemonList/fetchPokemonLists",
   async () => {
     const localStoredPokemon = localStorage.getItem(POKEMON_LIST);
 
@@ -25,7 +25,7 @@ export const fetchPokemonLists = createAsyncThunk(
 
     // check if there are no any data in local storage then fetch
     const { data, status } = await axios.get(
-      "https://pokeapi.co/api/v2/pokemon?limit=50"
+      "https://pokeapi.co/api/v2/pokemon?limit=1000"
     );
     if (status !== 200) throw new Error("Failed to fetch Pokemon lists");
 
