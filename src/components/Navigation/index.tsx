@@ -20,7 +20,7 @@ const Navigation: FC<Navigation> = ({ onClick }) => {
   };
 
   return (
-    <div className="flex mx-[20px] justify-between items-center gap-[23px] mt-[20px]">
+    <div className="fixed top-0 min-w-[430px] max-w-[430px] flex bg-bg-dark-black border-[#3D4466] items-center justify-between px-[25px] py-[16px] mt-[48px] z-10">
       <div className="basis-[75%]">
         <select
           className="font-[16px] p-[6px] w-full rounded-[8px]"
@@ -33,7 +33,7 @@ const Navigation: FC<Navigation> = ({ onClick }) => {
           <option value="descending">Descending</option>
         </select>
       </div>
-      <div className="basis-[25%] text-white flex items-center justify-center">
+      <div className="basis-[25%] text-white flex justify-end items-center">
         {/* Single grid button */}
         <button
           onClick={handleOneGridView}

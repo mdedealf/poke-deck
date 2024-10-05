@@ -11,6 +11,11 @@ interface Pokemon {
   url: string;
 }
 
+interface PokemonName {
+  name: string;
+}
+
+// Action : fetching pokemon lists
 export const fetchPokemonLists = createAsyncThunk(
   "pokemonList/fetchPokemonLists",
   async () => {
@@ -40,12 +45,14 @@ export const fetchPokemonLists = createAsyncThunk(
 
 interface PokemonListState {
   lists: Pokemon[];
+  listsName: PokemonName[];
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null | undefined;
 }
 
 const initialState: PokemonListState = {
   lists: [],
+  listsName: [],
   status: "idle",
   error: null,
 };

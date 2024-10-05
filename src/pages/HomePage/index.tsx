@@ -25,7 +25,7 @@ const Index: FC = () => {
   }, [dispatch, status]);
 
   return (
-    <div className="min-h-screen min-w-[400px] max-w-[430px] bg-[#252a3e]">
+    <div className="relative min-h-screen min-w-[430px] max-w-[430px] bg-[#252a3e]">
       <Header />
       <Navigation onClick={setIsSingleGrid} />
       <section className={`${isSingleGrid ? singleGridStyle : multiGridStyle}`}>

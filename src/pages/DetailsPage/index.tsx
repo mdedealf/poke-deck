@@ -20,7 +20,7 @@ const Index: FC = () => {
   if (error || !pokemonDetails) return <Error message={"Pokemon not found"} />;
 
   return (
-    <div className="min-h-screen min-w-[400px] max-w-[430px] bg-[#252a3e]">
+    <div className="min-h-screen min-w-[430px] max-w-[430px] bg-[#252a3e]">
       <Header />
       <section>
         {pokemonDetails && <CardDetails details={pokemonDetails} />}
