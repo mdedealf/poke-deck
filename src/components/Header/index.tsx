@@ -14,7 +14,8 @@ const Header: FC = () => {
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter") {
-      navigate(`/details/${input}`);
+      const inputLowerCase = input.toLowerCase();
+      navigate(`/details/${inputLowerCase}`);
     }
   };
 
@@ -39,7 +40,7 @@ const Header: FC = () => {
             onKeyDown={handleKeyDown}
           />
           <span
-            className="flex items-center justify-center cursor-pointer font-bold bg-white text-black h-[22px] w-[22px] rounded-2xl"
+            className="flex items-center justify-center cursor-pointer font-bold leading-[0px] text-[16px] bg-white text-black h-[22px] w-[22px] rounded-2xl hover:bg-slate-200 p-0 m-0 transition-all"
             onClick={handleSearchInput}
           >
             x

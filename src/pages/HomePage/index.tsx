@@ -11,42 +11,107 @@ import {
 } from "../../components/utils/layoutStyle";
 import { useAppDispatch, useAppSelector } from "../../hooks/useSelector";
 import { fetchPokemonLists } from "../../feature/pokemon/pokemonListSlice";
+import AppWraper from "../../components/AppWraper";
+import { POKEMON_LIST } from "../../constant/localStoragePokemon";
+
+type PokemonLists = {
+  name: string;
+  artworkFront: string;
+  id: number;
+  types: string[];
+};
 
 const Index: FC = () => {
-  const [isSingleGrid, setIsSingleGrid] = useState(true);
+  const [isSingleGrid, setIsSingleGrid] = useState<boolean>(true);
+  useState<string | null>(null);
+  const [sortOrder, setSortOrder] = useState<string>("default");
+  const [sortedList, setSortedList] = useState<PokemonLists[]>([]);
+  const [storedPokemonLists, setStoredPokemonLists] = useState<PokemonLists[]>(
+    []
+  );
 
   const dispatch = useAppDispatch();
-  const { lists, error, status } = useAppSelector((state) => state.pokemonList);
+  const { error, status } = useAppSelector((state) => state.pokemonList);
 
+  // Fetch pokemon list (for the very first time page load)
   useEffect(() => {
     if (status === "idle") {
+      console.log("fetch when idle");
       dispatch(fetchPokemonLists());
     }
   }, [dispatch, status]);
 
+  // Get local storage Pokemon list
+  useEffect(() => {
+    const localStoredPokemon = localStorage.getItem(POKEMON_LIST);
+    // console.log("Local storage data", localStoredPokemon);
+
+    // Check if localStoredPokemon is not null
+    if (localStoredPokemon) {
+      try {
+        const parsedPokemonLists: PokemonLists[] =
+          JSON.parse(localStoredPokemon);
+        // console.log("parsed pokemon lists", parsedPokemonLists);
+
+        // Ensure if parsedPokemonLists is an array
+        if (Array.isArray(parsedPokemonLists)) {
+          setStoredPokemonLists(parsedPokemonLists);
+          setSortedList(parsedPokemonLists);
+        } else console.log("Parsed data is not an array");
+      } catch (error) {
+        console.log("Error parsing local storage pokemon data", error);
+      }
+    } else {
+      console.log("No data found in local storage");
+    }
+  }, []);
+
+  // Sorting data based on user choice
+  useEffect(() => {
+    // Check if storedPokemonLists from local storage is not empty
+    if (storedPokemonLists.length > 0) {
+      const sortedPokemonLists = [...storedPokemonLists];
+
+      if (sortOrder === "default") {
+        setSortedList(sortedPokemonLists);
+      } else if (sortOrder === "A-Z") {
+        sortedPokemonLists.sort((a, b) => a.name.localeCompare(b.name));
+        setSortedList(sortedPokemonLists);
+      } else if (sortOrder === "Z-A") {
+        sortedPokemonLists.sort((a, b) => b.name.localeCompare(a.name));
+        setSortedList(sortedPokemonLists);
+      }
+    }
+  }, [sortOrder, storedPokemonLists]);
+
   return (
-    <div className="relative min-h-screen min-w-[430px] max-w-[430px] bg-[#252a3e]">
+    <AppWraper>
       <Header />
-      <Navigation onClick={setIsSingleGrid} />
+      <Navigation
+        onClick={setIsSingleGrid}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+      />
       <section className={`${isSingleGrid ? singleGridStyle : multiGridStyle}`}>
         <>
           {status === "loading" && <Loading />}
           {status === "failed" && <Error message={error} />}
           {status === "succeeded" &&
-            lists.map((pokemon, index) => (
+            sortedList.map((pokemon, index) => (
               <Link key={pokemon.name} to={`/details/${pokemon.name}`}>
                 <Card
                   name={pokemon.name}
-                  index={index}
+                  url={pokemon.artworkFront}
+                  types={pokemon.types}
                   key={index}
-                  idNumber={index + 1}
+                  id={pokemon.id}
                   isSingleGrid={isSingleGrid}
                 />
               </Link>
             ))}
         </>
       </section>
-    </div>
+    </AppWraper>
   );
 };
 
