@@ -29,6 +29,7 @@ const Index: FC = () => {
   useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<string>("default");
   const [sortedList, setSortedList] = useState<PokemonLists[]>([]);
+  const [originalLists, setOriginalLists] = useState<PokemonLists[]>([]);
   const dispatch = useAppDispatch();
   const { totalPage, currentPage, error, status } = useAppSelector(
     (state) => state.pokemonList
@@ -36,41 +37,48 @@ const Index: FC = () => {
 
   // Fetch pokemon for current page (initial load or page changes)
   useEffect(() => {
-    const localStoredPokemon = localStorage.getItem(
-      `${POKEMON_LIST}_page_${currentPage}`
-    );
-    console.log("Get items", localStoredPokemon);
-
-    // If local storage has any data, set it to state
-    if (localStoredPokemon) {
-      try {
-        const parsedPokemonLists: PokemonLists[] =
-          JSON.parse(localStoredPokemon);
-
-        // Ensure if parsedPokemonLists is an array
-        if (Array.isArray(parsedPokemonLists)) {
-          setSortedList(parsedPokemonLists);
-          console.log("Loaded data from local storage for page", currentPage);
-        } else console.log("Parsed data is not an array");
-      } catch (error) {
-        console.log("Error parsing local storage pokemon data", error);
-      }
-    } else {
-      // If no data found in local storage, then fetch data
-      console.log(
-        "No data found in local storage, fetching from API for page",
-        currentPage
+    const loadData = async () => {
+      const localStoredPokemon = localStorage.getItem(
+        `${POKEMON_LIST}_page_${currentPage}`
       );
-      dispatch(fetchPokemonLists(currentPage)).then(() => {
-        // After fetching, update the state with the new data
-        const updatedStoredPokemon = localStorage.getItem(
-          `${POKEMON_LIST}_page_${currentPage}`
-        );
-        if (updatedStoredPokemon) {
-          setSortedList(JSON.parse(updatedStoredPokemon));
+      console.log("Get items", localStoredPokemon);
+
+      // If local storage has any data, set it to state
+      if (localStoredPokemon) {
+        try {
+          const parsedPokemonLists: PokemonLists[] =
+            JSON.parse(localStoredPokemon);
+
+          // Ensure if parsedPokemonLists is an array
+          if (Array.isArray(parsedPokemonLists)) {
+            setSortedList(parsedPokemonLists);
+            setOriginalLists(parsedPokemonLists);
+            console.log("Loaded data from local storage for page", currentPage);
+          } else console.log("Parsed data is not an array");
+        } catch (error) {
+          console.log("Error parsing local storage pokemon data", error);
         }
-      });
-    }
+      } else {
+        // If no data found in local storage, then fetch data
+        console.log(
+          "No data found in local storage, fetching from API for page",
+          currentPage
+        );
+        dispatch(fetchPokemonLists(currentPage)).then(() => {
+          // After fetching, update the state with the new data
+          const updatedStoredPokemon = localStorage.getItem(
+            `${POKEMON_LIST}_page_${currentPage}`
+          );
+          if (updatedStoredPokemon) {
+            const fetchedPokemon = JSON.parse(updatedStoredPokemon);
+            setSortedList(fetchedPokemon);
+            setOriginalLists(fetchedPokemon);
+          }
+        });
+      }
+    };
+
+    loadData();
   }, [dispatch, currentPage]);
 
   // Store data in local storage after fetching data
@@ -91,7 +99,7 @@ const Index: FC = () => {
       let newSortedList: PokemonLists[] = [];
 
       if (sortOrder === "default") {
-        newSortedList = sortedPokemonLists;
+        newSortedList = [...originalLists];
       } else if (sortOrder === "A-Z") {
         newSortedList = sortedPokemonLists.sort((a, b) =>
           a.name.localeCompare(b.name)
@@ -105,17 +113,23 @@ const Index: FC = () => {
       if (JSON.stringify(newSortedList) !== JSON.stringify(sortedList))
         setSortedList(newSortedList);
     }
-  }, [sortOrder, sortedList]);
+  }, [sortOrder, sortedList, originalLists]);
 
-  const handlePreviousPage = () => {
-    if (currentPage > 1) dispatch(setCurrentPage(currentPage - 1));
-  };
-
+  // Handle click next page
   const handleNextPage = () => {
     if (currentPage < totalPage) {
-      dispatch(setCurrentPage(currentPage + 1));
+      const newPage = currentPage + 1;
+      dispatch(setCurrentPage(newPage));
+      dispatch(fetchPokemonLists(newPage));
+    }
+  };
 
-      dispatch(fetchPokemonLists(currentPage + 1));
+  // Handle click prev page
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      const newPage = currentPage - 1;
+      dispatch(setCurrentPage(newPage));
+      dispatch(fetchPokemonLists(newPage));
     }
   };
 
