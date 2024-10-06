@@ -6,6 +6,7 @@ import {
 import axios from "axios";
 import {
   MAX_POKEMON_LISTS,
+  MAX_POKEMON_PER_PAGE,
   POKEMON_LIST,
 } from "../../constant/localStoragePokemon";
 
@@ -48,34 +49,49 @@ const fetchPokemonDetails = async (
 // Action : fetching pokemon lists
 export const fetchPokemonLists = createAsyncThunk(
   "pokemonList/fetchPokemonLists",
-  async () => {
-    try {
-      const localStoredPokemon = localStorage.getItem(POKEMON_LIST);
-      const FETCH_LIST_AMOUNT = MAX_POKEMON_LISTS;
+  async (page: number, { rejectWithValue }) => {
+    // How many Data per page
+    const POKEMON_PER_PAGE = MAX_POKEMON_PER_PAGE;
+    // Calculate offset based on the page number
+    const offset = (page - 1) * POKEMON_PER_PAGE;
 
-      // check if there are any data in local storage then use it
+    try {
+      const localStoredPokemon = localStorage.getItem(
+        `${POKEMON_LIST}_page_${page}`
+      );
+
+      // If there are any data for current page in local storage then use it
       if (localStoredPokemon) {
-        console.log("using data from localStorage");
-        return JSON.parse(localStoredPokemon) as Pokemon[];
+        console.log(`using data from localStorage for page ${page}`);
+        return JSON.parse(localStoredPokemon) as PokemonSmallDetails[];
       }
 
-      // Fetch if no data in local storage
+      // Fetch data from API with pagination if no data in local storage
       const { data } = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon?limit=${FETCH_LIST_AMOUNT}`
+        `https://pokeapi.co/api/v2/pokemon?limit=${POKEMON_PER_PAGE}&offset=${offset}`
       );
+
+      console.log("Fetched data from API for page ${page}", data);
       const pokemonList = data.results as Pokemon[];
 
-      // Use helper function to fetch details for each pokemon
+      // Use helper function to fetch details for each individual pokemon
       const pokemonDetailsPromises = pokemonList.map(fetchPokemonDetails);
       const pokemonDetails = await Promise.all(pokemonDetailsPromises);
 
-      // Save data into local storage
-      localStorage.setItem(POKEMON_LIST, JSON.stringify(pokemonDetails));
-      console.log("data fetched from API and stored to localStorage");
+      // Cache the result for this page into local storage
+      localStorage.setItem(
+        `${POKEMON_LIST}_page_${page}`,
+        JSON.stringify(pokemonDetails)
+      );
 
-      return pokemonDetails as PokemonSmallDetails[];
+      console.log(
+        `data fetched from API for page ${page} and stored to localStorage`
+      );
+
+      return pokemonDetails;
     } catch (error) {
-      throw new Error("Error fetching Pokemon data.");
+      console.log("Error fetching data", error);
+      return rejectWithValue("Error fetching Pokemon data.");
     }
   }
 );
@@ -83,6 +99,8 @@ export const fetchPokemonLists = createAsyncThunk(
 interface PokemonListState {
   lists: Pokemon[];
   listsName: string[];
+  currentPage: number;
+  totalPage: number;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null | undefined;
 }
@@ -90,6 +108,8 @@ interface PokemonListState {
 const initialState: PokemonListState = {
   lists: [],
   listsName: [],
+  currentPage: 1,
+  totalPage: Math.ceil(MAX_POKEMON_LISTS / MAX_POKEMON_PER_PAGE),
   status: "idle",
   error: null,
 };
@@ -97,7 +117,11 @@ const initialState: PokemonListState = {
 const pokemonListSlice = createSlice({
   name: "pokemonList",
   initialState,
-  reducers: {},
+  reducers: {
+    setCurrentPage: (state, action) => {
+      state.currentPage = action.payload;
+    },
+  },
   extraReducers: (builder: ActionReducerMapBuilder<PokemonListState>) => {
     builder
 
@@ -113,7 +137,7 @@ const pokemonListSlice = createSlice({
           name: pokemon.name,
           url: `https://pokeapi.co/api/v2/pokemon/${pokemon.id}/`,
         }));
-
+        state.totalPage = Math.ceil(MAX_POKEMON_LISTS / MAX_POKEMON_PER_PAGE);
         state.listsName = action.payload.map((pokemon) => pokemon.name);
       })
       .addCase(fetchPokemonLists.rejected, (state, action) => {
@@ -122,5 +146,7 @@ const pokemonListSlice = createSlice({
       });
   },
 });
+
+export const { setCurrentPage } = pokemonListSlice.actions;
 
 export default pokemonListSlice.reducer;

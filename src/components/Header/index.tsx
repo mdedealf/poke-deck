@@ -35,7 +35,7 @@ const Header: FC = () => {
   };
 
   return (
-    <header className="sticky top-0 flex h-[48px] bg-bg-dark-black border-b-[1px] border-[#3D4466] w-full text-white items-center justify-between px-[25px] py-[6px]">
+    <header className="fixed top-0 flex h-[48px] bg-bg-dark-black border-b-[1px] border-[#3D4466] min-w-[430px] max-w-[430px] text-white items-center justify-between px-[25px] py-[6px] z-10">
       <Link to={"/"}>
         <img src={PokeDeckLogo} alt="Pokemon logo" />
       </Link>
