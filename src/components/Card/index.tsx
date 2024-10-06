@@ -10,7 +10,7 @@ interface PokemonList {
 
 const Card: FC<PokemonList> = ({ name, url, id, types, isSingleGrid }) => {
   return (
-    <div className="flex flex-col text-black items-center bg-white rounded-[8px] h-[195px] md:h-auto">
+    <div className="flex flex-col text-black items-center bg-white rounded-[8px] h-[278px]">
       <div className="flex items-center justify-between w-full p-[13px]">
         <span
           className={`${
@@ -34,13 +34,15 @@ const Card: FC<PokemonList> = ({ name, url, id, types, isSingleGrid }) => {
           #{id}
         </span>
       </div>
-      <div className="flex flex-col items-center justify-center mb-[15px] gap-[8px]">
+      <div className="flex flex-col items-center justify-center mb-[15px] gap-[18px] w-full">
         <img
           className="h-[90px] w-[90px] md:h-[154px] md:w-auto object-cover mt-[15px]"
           src={url}
           alt={name}
         />
-        <span className="text-[18px] font-bold leading-[18px]">{name}</span>
+        <span className="text-[18px] font-bold leading-[18px] px-[15px] text-center break-words capitalize">
+          {name}
+        </span>
       </div>
     </div>
   );

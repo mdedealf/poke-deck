@@ -51,7 +51,7 @@ export const fetchPokemonLists = createAsyncThunk(
   async () => {
     try {
       const localStoredPokemon = localStorage.getItem(POKEMON_LIST);
-      const FETCH_LIST_AMOUNT = MAX_POKEMON_LISTS - 1062;
+      const FETCH_LIST_AMOUNT = MAX_POKEMON_LISTS;
 
       // check if there are any data in local storage then use it
       if (localStoredPokemon) {

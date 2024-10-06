@@ -27,7 +27,7 @@ const Navigation: FC<Navigation> = ({ onClick, sortOrder, setSortOrder }) => {
     <div className="fixed top-0 min-w-[430px] max-w-[430px] flex bg-bg-dark-black border-[#3D4466] items-center justify-between px-[25px] py-[16px] mt-[48px] z-10">
       <div className="basis-[75%]">
         <select
-          className="font-[16px] p-[6px] w-full rounded-[8px] bg-[#3D4466] text-white"
+          className="font-[16px] p-[6px] w-full rounded-[8px] bg-[#3D4466] text-white ring-0 outline-none"
           value={sortOrder}
           onChange={(e) => setSortOrder(e.target.value)}
         >
