@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { POKEMON_LIST } from "../constant/localStoragePokemon";
+import { POKEMON_LIST } from "../constant/pokemonConstant";
 
 interface Pokemon {
   name: string;

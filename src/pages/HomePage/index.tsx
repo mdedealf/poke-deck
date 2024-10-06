@@ -15,7 +15,7 @@ import {
   setCurrentPage,
 } from "../../feature/pokemon/pokemonListSlice";
 import AppWraper from "../../components/AppWraper";
-import { POKEMON_LIST } from "../../constant/localStoragePokemon";
+import { POKEMON_LIST } from "../../constant/pokemonConstant";
 
 type PokemonLists = {
   name: string;

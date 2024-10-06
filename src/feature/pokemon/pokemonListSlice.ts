@@ -8,7 +8,7 @@ import {
   MAX_POKEMON_LISTS,
   MAX_POKEMON_PER_PAGE,
   POKEMON_LIST,
-} from "../../constant/localStoragePokemon";
+} from "../../constant/pokemonConstant";
 
 interface Pokemon {
   name: string;
