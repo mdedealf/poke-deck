@@ -12,6 +12,7 @@ import {
 interface Pokemon {
   name: string;
   url: string;
+  id: number;
 }
 
 interface PokemonSmallDetails {
@@ -29,13 +30,28 @@ interface PokemonType {
   };
 }
 
+// Helper: Get pokemon detail
+const fetchPokemonDetails = async (
+  pokemon: Pokemon
+): Promise<PokemonSmallDetails> => {
+  const pokemonDetailResponse = await axios.get(pokemon.url);
+  const details = pokemonDetailResponse.data;
+
+  return {
+    name: details.name,
+    id: details.id,
+    artworkFront: details.sprites.other["official-artwork"].front_default,
+    types: details.types.map((typeInfo: PokemonType) => typeInfo.type.name),
+  };
+};
+
 // Action : fetching pokemon lists
 export const fetchPokemonLists = createAsyncThunk(
   "pokemonList/fetchPokemonLists",
   async () => {
     try {
       const localStoredPokemon = localStorage.getItem(POKEMON_LIST);
-      const FETCH_LIST_AMOUNT = MAX_POKEMON_LISTS - 1262;
+      const FETCH_LIST_AMOUNT = MAX_POKEMON_LISTS - 1062;
 
       // check if there are any data in local storage then use it
       if (localStoredPokemon) {
@@ -49,24 +65,11 @@ export const fetchPokemonLists = createAsyncThunk(
       );
       const pokemonList = data.results as Pokemon[];
 
-      // Get pokemon detail
-      const pokemonDetailsPromises = pokemonList.map(async (pokemon) => {
-        const pokemonDetailResponse = await axios.get(pokemon.url);
-        const details = pokemonDetailResponse.data;
-
-        return {
-          name: details.name,
-          url: details.url,
-          id: details.id,
-          artworkFront: details.sprites.other["official-artwork"].front_default,
-          types: details.types.map(
-            (typeInfo: PokemonType) => typeInfo.type.name
-          ),
-        };
-      });
-
+      // Use helper function to fetch details for each pokemon
+      const pokemonDetailsPromises = pokemonList.map(fetchPokemonDetails);
       const pokemonDetails = await Promise.all(pokemonDetailsPromises);
 
+      // Save data into local storage
       localStorage.setItem(POKEMON_LIST, JSON.stringify(pokemonDetails));
       console.log("data fetched from API and stored to localStorage");
 
@@ -106,6 +109,7 @@ const pokemonListSlice = createSlice({
         state.status = "succeeded";
 
         state.lists = action.payload.map((pokemon) => ({
+          id: pokemon.id,
           name: pokemon.name,
           url: `https://pokeapi.co/api/v2/pokemon/${pokemon.id}/`,
         }));
