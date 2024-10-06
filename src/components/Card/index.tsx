@@ -37,9 +37,6 @@ const Card: FC<PokemonList> = ({ name, url, id, types, isSingleGrid }) => {
       <div className="flex flex-col items-center justify-center mb-[15px] gap-[8px]">
         <img
           className="h-[90px] w-[90px] md:h-[154px] md:w-auto object-cover mt-[15px]"
-          // src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
-          //   index + 1
-          // }.png`}
           src={url}
           alt={name}
         />
